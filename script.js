@@ -2,13 +2,10 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Инициализация всех функций
     initPreloader();
-    initCustomCursor();
     initScrollProgress();
     initScrollAnimations();
     initParallaxEffects();
     initFloatingElements();
-    initCountdownTimer();
-    initAnimatedCounters();
     initNavigation();
     initCardHoverEffects();
     initClickEffects();
@@ -33,77 +30,6 @@ function initPreloader() {
             preloader.style.display = 'none';
         }, 600);
     }, 1500);
-}
-
-// ===== CUSTOM CURSOR =====
-function initCustomCursor() {
-    const cursorDot = document.querySelector('.cursor-dot');
-    const cursorOutline = document.querySelector('.cursor-outline');
-    
-    // Если устройство не поддерживает курсор (тачскрин), скрываем кастомный курсор
-    if (window.matchMedia('(pointer: coarse)').matches) {
-        cursorDot.style.display = 'none';
-        cursorOutline.style.display = 'none';
-        document.documentElement.style.cursor = 'auto';
-        return;
-    }
-    
-    let mouseX = 0;
-    let mouseY = 0;
-    let outlineX = 0;
-    let outlineY = 0;
-    
-    // Скорость следования outline за dot
-    const speed = 0.1;
-    
-    // Обновление позиции курсора
-    function updateCursor(e) {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        
-        // Немедленное обновление точки
-        cursorDot.style.left = `${mouseX}px`;
-        cursorDot.style.top = `${mouseY}px`;
-    }
-    
-    // Плавное движение outline
-    function animateOutline() {
-        // Интерполяция для плавного движения
-        outlineX += (mouseX - outlineX) * speed;
-        outlineY += (mouseY - outlineY) * speed;
-        
-        cursorOutline.style.left = `${outlineX}px`;
-        cursorOutline.style.top = `${outlineY}px`;
-        
-        requestAnimationFrame(animateOutline);
-    }
-    
-    // Эффекты при наведении на интерактивные элементы
-    function handleCursorEffects() {
-        // Все интерактивные элементы
-        const interactiveElements = document.querySelectorAll(
-            'a, button, .event-card, .artist-card, .tagger-btn, .scroll-indicator, .social-link, .footer-link'
-        );
-        
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorDot.style.transform = 'scale(1.5)';
-                cursorOutline.style.transform = 'scale(1.2)';
-                cursorOutline.style.borderColor = 'var(--accent)';
-            });
-            
-            el.addEventListener('mouseleave', () => {
-                cursorDot.style.transform = 'scale(1)';
-                cursorOutline.style.transform = 'scale(1)';
-                cursorOutline.style.borderColor = 'var(--accent-light)';
-            });
-        });
-    }
-    
-    // Инициализация
-    document.addEventListener('mousemove', updateCursor);
-    requestAnimationFrame(animateOutline);
-    handleCursorEffects();
 }
 
 // ===== SCROLL PROGRESS =====
@@ -253,96 +179,6 @@ function initFloatingElements() {
     
     window.addEventListener('scroll', onFloatScroll);
     updateFloatingParallax(); // Инициализация
-}
-
-// ===== COUNTDOWN TIMER =====
-function initCountdownTimer() {
-    // Дата следующего концерта (2 февраля 2026)
-    const nextConcertDate = new Date('February 2, 2026 21:00:00').getTime();
-    const countdownElements = {
-        days: document.getElementById('days'),
-        hours: document.getElementById('hours'),
-        minutes: document.getElementById('minutes'),
-        seconds: document.getElementById('seconds')
-    };
-    
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const timeLeft = nextConcertDate - now;
-        
-        if (timeLeft < 0) {
-            // Если время прошло, показываем сообщение
-            Object.values(countdownElements).forEach(el => {
-                el.textContent = '00';
-            });
-            return;
-        }
-        
-        // Расчет дней, часов, минут, секунд
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-        
-        // Обновление элементов с добавлением ведущего нуля
-        countdownElements.days.textContent = days.toString().padStart(2, '0');
-        countdownElements.hours.textContent = hours.toString().padStart(2, '0');
-        countdownElements.minutes.textContent = minutes.toString().padStart(2, '0');
-        countdownElements.seconds.textContent = seconds.toString().padStart(2, '0');
-    }
-    
-    // Обновляем каждую секунду
-    const countdownInterval = setInterval(updateCountdown, 1000);
-    updateCountdown(); // Инициализация
-    
-    // Очистка интервала при размонтировании (если будет SPA)
-    window.addEventListener('beforeunload', () => {
-        clearInterval(countdownInterval);
-    });
-}
-
-// ===== ANIMATED COUNTERS =====
-function initAnimatedCounters() {
-    const counters = document.querySelectorAll('.stat-number');
-    
-    // Проверяем, виден ли элемент на экране
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.5
-    };
-    
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const counter = entry.target;
-                const target = parseInt(counter.dataset.count);
-                const duration = 2000; // 2 секунды
-                const step = Math.ceil(target / (duration / 16)); // 60fps
-                let current = 0;
-                
-                const updateCounter = () => {
-                    current += step;
-                    if (current > target) {
-                        current = target;
-                    }
-                    
-                    counter.textContent = current;
-                    
-                    if (current < target) {
-                        requestAnimationFrame(updateCounter);
-                    }
-                };
-                
-                requestAnimationFrame(updateCounter);
-                counterObserver.unobserve(counter);
-            }
-        });
-    }, observerOptions);
-    
-    counters.forEach(counter => {
-        counterObserver.observe(counter);
-    });
 }
 
 // ===== NAVIGATION =====
@@ -515,20 +351,6 @@ function handleResize() {
     parallaxElements.forEach(el => {
         el.style.backgroundAttachment = isMobile ? 'scroll' : 'fixed';
     });
-    
-    // Переинициализируем курсор на мобильных
-    const cursorDot = document.querySelector('.cursor-dot');
-    const cursorOutline = document.querySelector('.cursor-outline');
-    
-    if (window.matchMedia('(pointer: coarse)').matches) {
-        cursorDot.style.display = 'none';
-        cursorOutline.style.display = 'none';
-        document.documentElement.style.cursor = 'auto';
-    } else {
-        cursorDot.style.display = 'block';
-        cursorOutline.style.display = 'block';
-        document.documentElement.style.cursor = 'none';
-    }
 }
 
 // Обработчик изменения размера окна
@@ -559,7 +381,6 @@ document.addEventListener('DOMContentLoaded', lazyLoadImages);
 // ===== ERROR HANDLING =====
 window.addEventListener('error', function(e) {
     console.error('Error occurred:', e.error);
-    // Можно добавить отправку ошибок на сервер или показать пользователю
 });
 
 // ===== TOUCH DEVICE SUPPORT =====
