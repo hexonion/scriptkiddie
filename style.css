@@ -39,7 +39,6 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', system-ui, sans-serif;
-    cursor: none; /* Для кастомного курсора */
 }
 
 html {
@@ -54,6 +53,7 @@ body {
     overflow-x: hidden;
     min-height: 100vh;
     position: relative;
+    cursor: default;
 }
 
 /* Текстура шума */
@@ -160,31 +160,6 @@ body:before {
     animation: bounce 1.5s infinite;
     animation-delay: calc(var(--delay) * 1s);
     color: var(--accent);
-}
-
-/* ===== CUSTOM CURSOR ===== */
-.cursor-dot {
-    width: 8px;
-    height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 99999;
-    transition: transform 0.1s;
-    mix-blend-mode: difference;
-}
-
-.cursor-outline {
-    width: 40px;
-    height: 40px;
-    border: 2px solid var(--accent-light);
-    border-radius: 50%;
-    position: fixed;
-    pointer-events: none;
-    z-index: 99998;
-    transition: all 0.2s ease-out;
-    mix-blend-mode: difference;
 }
 
 /* ===== SCROLL PROGRESS ===== */
@@ -301,42 +276,6 @@ header {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
     opacity: 0;
     animation: fadeIn 1s ease-out 1s forwards;
-}
-
-/* ===== STATS CONTAINER ===== */
-.stats-container {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin-top: 50px;
-    flex-wrap: wrap;
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    min-width: 120px;
-}
-
-.stat-number {
-    font-size: 3rem;
-    font-weight: 900;
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    line-height: 1;
-    margin-bottom: 10px;
-    text-shadow: 0 0 20px var(--glow);
-}
-
-.stat-label {
-    font-size: 1rem;
-    color: var(--text-light);
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 /* ===== FLOATING ELEMENTS ===== */
@@ -868,13 +807,11 @@ section {
     z-index: 1;
 }
 
-/* Социальные ссылки артистов */
+/* Социальные ссылки артистов - только TAGGER */
 .artist-social {
     position: absolute;
     bottom: 20px;
     right: 20px;
-    display: flex;
-    gap: 10px;
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.3s ease;
@@ -886,9 +823,9 @@ section {
 }
 
 .social-link {
-    width: 40px;
-    height: 40px;
-    background: rgba(0, 0, 0, 0.7);
+    width: 45px;
+    height: 45px;
+    background: rgba(0, 0, 0, 0.8);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -896,13 +833,18 @@ section {
     color: var(--text);
     text-decoration: none;
     transition: var(--transition);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
 }
 
 .social-link:hover {
     background: var(--accent);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-glow);
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 0 25px rgba(255, 71, 87, 0.6);
+}
+
+.social-link i {
+    font-size: 1.3rem;
 }
 
 .artist-info {
@@ -1096,62 +1038,6 @@ section {
     font-size: 1.3rem;
     line-height: 1.8;
     text-align: center;
-}
-
-/* Таймер обратного отсчета */
-.countdown-container {
-    margin: 40px auto 60px;
-    max-width: 800px;
-}
-
-.countdown-container h3 {
-    font-size: 1.5rem;
-    margin-bottom: 30px;
-    color: var(--text-light);
-    font-weight: 400;
-}
-
-.countdown-timer {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.time-unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 100px;
-    padding: 20px;
-    background: rgba(26, 26, 26, 0.7);
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 71, 87, 0.2);
-    transition: var(--transition);
-}
-
-.time-unit:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent);
-    box-shadow: var(--shadow-glow);
-}
-
-.time-number {
-    font-size: 2.5rem;
-    font-weight: 900;
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    line-height: 1;
-    margin-bottom: 10px;
-}
-
-.time-label {
-    font-size: 0.9rem;
-    color: var(--text-light);
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 .tagger-btn {
@@ -1483,18 +1369,6 @@ footer:before {
     .parallax-bg {
         background-attachment: scroll;
     }
-    
-    .stats-container {
-        gap: 30px;
-    }
-    
-    .stat-item {
-        min-width: 100px;
-    }
-    
-    .stat-number {
-        font-size: 2.5rem;
-    }
 }
 
 @media (max-width: 768px) {
@@ -1542,32 +1416,6 @@ footer:before {
     .footer-links {
         gap: 20px;
     }
-    
-    .countdown-timer {
-        gap: 10px;
-    }
-    
-    .time-unit {
-        min-width: 80px;
-        padding: 15px;
-    }
-    
-    .time-number {
-        font-size: 2rem;
-    }
-    
-    .stats-container {
-        gap: 20px;
-    }
-    
-    .stat-item {
-        min-width: 80px;
-        padding: 15px;
-    }
-    
-    .stat-number {
-        font-size: 2rem;
-    }
 }
 
 @media (max-width: 480px) {
@@ -1584,25 +1432,5 @@ footer:before {
     .footer-links {
         flex-direction: column;
         gap: 15px;
-    }
-    
-    .countdown-timer {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .time-unit {
-        width: 100%;
-        max-width: 200px;
-    }
-    
-    .stats-container {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .stat-item {
-        width: 100%;
-        max-width: 200px;
     }
 }
